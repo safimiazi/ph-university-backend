@@ -3,3 +3,10 @@ export const studentSearchableFields = [
   "name.firstname",
   "presentAddress",
 ];
+
+
+export const facultySearchableFields = [
+  "email",
+  "name.firstname",
+  "presentAddress",
+];
