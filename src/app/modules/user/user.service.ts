@@ -118,7 +118,14 @@ const createFacultyIntoDb = async (password: string, facultyData: TFaculty) => {
   }
 };
 
+
+
+const createAdminIntoDB = async (password: string, payload: TFaculty) => {
+};
+
+
+
 export const UserService = {
   createStudentIntoDB,
-  createFacultyIntoDb,
+  createFacultyIntoDb,createAdminIntoDB
 };
