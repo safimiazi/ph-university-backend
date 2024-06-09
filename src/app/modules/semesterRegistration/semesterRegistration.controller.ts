@@ -47,12 +47,24 @@ const getSingleSemesterRegistration = catchAsync(async(req, res)=>{
       });
 })
 
+const deleteSemesterRegistration = catchAsync(async(req, res)=> {
+  const {id} = req.params;
+const result = await semesterRegistrationServices.deleteSemesterRegistrationFromDB(id);
+sendResponse(res, {
+  statusCode: httpStatus.OK,
+  success: true,
+  message: "Get single Semester Registration succesfully",
+  data: result,
+});
+})
+
 
 export const semesterRegistrationControllers = {
 createSemesterRegistration,
 updateSemesterRegistration,
 getAllSemesterRegistration,
-getSingleSemesterRegistration
+getSingleSemesterRegistration,
+deleteSemesterRegistration
 }
 
 
