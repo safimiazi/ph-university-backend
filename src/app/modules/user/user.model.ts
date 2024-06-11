@@ -1,10 +1,10 @@
 import { Schema, model } from "mongoose";
-import { TUser } from "./user.interface";
+import { TUser, UserModel } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
 import { Student } from "../student/student.model";
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: {
       type: String,
@@ -14,6 +14,7 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       require: true,
+      select: 0
     },
     needsPasswordChange: {
       type: Boolean,
@@ -26,6 +27,7 @@ const userSchema = new Schema<TUser>(
     status: {
       type: String,
       enum: ["in-progress", "blocked"],
+      default: "in-progress",
     },
     isDeleted: {
       type: Boolean,
@@ -43,7 +45,7 @@ userSchema.pre("save", async function (next) {
   // hashing password and save into DB
   user.password = await bcrypt.hash(
     user.password.toString(),
-        Number(config.bcrypt_salt_rounds)
+    Number(config.bcrypt_salt_rounds)
   );
   next();
 });
@@ -54,5 +56,15 @@ userSchema.post("save", function (doc, next) {
   next();
 });
 
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await User.findOne({ id }).select('+password');
+};
 
-export const User = model<TUser>("User", userSchema);
+userSchema.statics.isPasswordMatch = async function (
+  userPass: string,
+  hashingPass: string
+) {
+  return await bcrypt.compare(userPass, hashingPass.toString());
+};
+
+export const User = model<TUser, UserModel>("User", userSchema);
